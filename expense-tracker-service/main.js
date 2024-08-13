@@ -47,7 +47,7 @@ app.get("/categories/delete", (req, res) => {
     fs.writeFileSync('categories.json', JSON.stringify(categories)); // Save the updated list back to the file
     res.json("Category deleted successfully"); // Send a success message
   } else {
-    res.status(404).json("Category not found"); // If the category doesn't exist, send a 404 error
+    res.status(404).json("Categoryy not found"); // If the category doesn't exist, send a 404 error
   }
   res.json("success")
 })

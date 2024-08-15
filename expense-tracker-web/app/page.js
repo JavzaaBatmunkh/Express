@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [categories, setCategories] = useState([])
 
-  function loadList(){
+  function loadList() {
     fetch("http://localhost:4000/categories/list")
-    .then(res => res.json())
-    .then((data) => { setCategories(data) })
+      .then(res => res.json())
+      .then((data) => { setCategories(data) })
   }
 
 
@@ -18,32 +18,56 @@ export default function Home() {
   }, [])
 
   function createNew() {
-    const name=prompt("Name...")
-    fetch(`http://localhost:4000/categories/create?name=${name}`)
+    const name = prompt("Name...")
+    fetch(`http://localhost:4000/categories/create`,
+      { method: "POST",
+        body: JSON.stringify({name: name}),
+        headers:{"Content-type":"application/json; charset=UTF-8"}
+       }
+    )
       .then(res => res.json())
-      .then((data) => {loadList()}) 
+      .then((data) => { loadList() })
   }
 
-  function deleteCategory(name) {
-    const confirmation=confirm("Are you sure to delete?")
-    if (confirmation===true){
-      fetch(`http://localhost:4000/categories/delete?name=${name}`)
-      .then(res => res.json())
-      .then((data) => {loadList()}) 
+  function deleteCategory(id) {
+    const confirmation = confirm("Are you sure to delete?")
+    if (confirmation === true) {
+      fetch(`http://localhost:4000/categories/delete`,
+        { method: "DELETE",
+          body: JSON.stringify({id: id}),
+          headers:{"Content-type":"application/json; charset=UTF-8"}
+         }
+      )
+        .then(res => res.json())
+        .then((data) => { loadList() })
     }
-    else{}
+    else { }
   }
 
+  function updateCategory(id, name) {
+    const newName = prompt("Edit category name...", name)
+    if (newName) {
+      fetch(`http://localhost:4000/categories/update`,
+        { method: "PUT",
+          body: JSON.stringify({id: id, newName: newName }),
+          headers:{"Content-type":"application/json; charset=UTF-8"}
+         }
+      )
+        .then(res => res.json())
+        .then((data) => { loadList() })
+    }
+    else { }
+  }
 
-return (
-  <main >
-    <button onClick={createNew}>Add new</button>
-    {categories.map((category) => (
-      <div key={category.name}>{category.name}
-      <button>edit</button>
-      <button onClick={() => deleteCategory(category.name) }>delete</button>
-      </div>
-    ))}
-  </main>
-);
+  return (
+    <main >
+      <button onClick={createNew}>Add new</button>
+      {categories.map((category) => (
+        <div key={category.id}>{category.name}
+          <button onClick={() => updateCategory(category.id, category.name)}>edit</button>
+          <button onClick={() => deleteCategory(category.id)}>delete</button>
+        </div>
+      ))}
+    </main>
+  );
 }

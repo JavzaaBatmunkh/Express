@@ -7,7 +7,7 @@ export default function Home() {
   const [categories, setCategories] = useState([])
 
   function loadList() {
-    fetch("http://localhost:4000/categories/list")
+    fetch("http://localhost:4000/categories")
       .then(res => res.json())
       .then((data) => { setCategories(data) })
   }
@@ -19,7 +19,7 @@ export default function Home() {
 
   function createNew() {
     const name = prompt("Name...")
-    fetch(`http://localhost:4000/categories/create`,
+    fetch(`http://localhost:4000/categories`,
       { method: "POST",
         body: JSON.stringify({name: name}),
         headers:{"Content-type":"application/json; charset=UTF-8"}
@@ -32,9 +32,9 @@ export default function Home() {
   function deleteCategory(id) {
     const confirmation = confirm("Are you sure to delete?")
     if (confirmation === true) {
-      fetch(`http://localhost:4000/categories/delete`,
+      fetch(`http://localhost:4000/categories/${id}`,
         { method: "DELETE",
-          body: JSON.stringify({id: id}),
+          // body: JSON.stringify({id: id}),
           headers:{"Content-type":"application/json; charset=UTF-8"}
          }
       )
@@ -47,7 +47,7 @@ export default function Home() {
   function updateCategory(id, name) {
     const newName = prompt("Edit category name...", name)
     if (newName) {
-      fetch(`http://localhost:4000/categories/update`,
+      fetch(`http://localhost:4000/categories/${id}`,
         { method: "PUT",
           body: JSON.stringify({id: id, newName: newName }),
           headers:{"Content-type":"application/json; charset=UTF-8"}

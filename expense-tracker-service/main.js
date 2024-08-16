@@ -9,11 +9,17 @@ const content = fs.readFileSync('categories.json', "utf-8")
 console.log({ content })
 let categories = JSON.parse(content)
 
-app.get("/categories/list", (req, res) => {
+app.get("/categories", (req, res) => {
   res.json(categories)
 })
 
-app.post("/categories/create", (req, res) => {
+// app.get("/categories/:id", (req, res) => {
+//   const {id}=req.params
+//   const category=categories.find(cat.id === id)
+//   res.json(category)
+// })
+
+app.post("/categories", (req, res) => {
   const { name } = req.body
   categories.push({ name: name, id: new Date().toISOString() })
   fs.writeFileSync('categories.json', JSON.stringify(categories))
@@ -21,10 +27,11 @@ app.post("/categories/create", (req, res) => {
   res.json("success")
 })
 
-app.put("/categories/update", (req, res) => {
-  const { id, newName } = req.body; // Getting the old name and new name from the query parameters
+app.put("/categories/:id", (req, res) => {
+  const {id}=req.params
+  const {newName } = req.body; // Getting the old name and new name from the query parameters
 
-  console.log({ id, newName })
+  // console.log({ id, newName })
 
   const index = categories.findIndex(category => category.id === id); // Finding the category with the old name
 
@@ -38,9 +45,8 @@ app.put("/categories/update", (req, res) => {
 
 })
 
-app.delete("/categories/delete", (req, res) => {
-
-  const { id } = req.body; // Getting the id of the category to delete from the query parameters
+app.delete("/categories/:id", (req, res) => {
+  const {id}=req.params // Getting the id of the category to delete from the query parameters
 
   const index = categories.findIndex(category => category.id === id); // Finding the category by its name
 
